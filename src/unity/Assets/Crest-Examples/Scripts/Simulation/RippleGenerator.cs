@@ -10,7 +10,7 @@ public class RippleGenerator : MonoBehaviour
     MeshRenderer _mr;
     Material _mat;
 
-	void Start()
+    void Start()
     {
         _mr = GetComponent<MeshRenderer>();
         if(_animate)
@@ -18,9 +18,9 @@ public class RippleGenerator : MonoBehaviour
             _mr.enabled = false;
         }
         _mat = _mr.material;
-	}
-	
-	void Update()
+    }
+    
+    void Update()
     {
         if(_animate)
         {

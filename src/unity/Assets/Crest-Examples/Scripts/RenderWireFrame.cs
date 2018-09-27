@@ -27,7 +27,7 @@ public class RenderWireFrame : MonoBehaviour
 
     void OnPreRender()
     {
-    	if( enabled )
-    		GL.wireframe = _wireFrame;
+        if( enabled )
+            GL.wireframe = _wireFrame;
     }
 }

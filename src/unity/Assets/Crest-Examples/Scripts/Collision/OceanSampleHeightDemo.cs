@@ -8,7 +8,7 @@ using Crest;
 /// </summary>
 public class OceanSampleHeightDemo : MonoBehaviour
 {
-	void Update()
+    void Update()
     {
         var pos = transform.position;
         float height;

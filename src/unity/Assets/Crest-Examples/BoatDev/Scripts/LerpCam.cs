@@ -19,5 +19,5 @@ public class LerpCam : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, targetPos, _lerpAlpha * Time.deltaTime * 60f);
         transform.LookAt(_targetLookatPos.position + _lookatOffset * Vector3.up);
-	}
+    }
 }

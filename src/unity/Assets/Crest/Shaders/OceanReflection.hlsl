@@ -6,16 +6,16 @@ uniform half _SkyDirectionality;
 
 half3 SkyProceduralDP(half3 refl, half3 lightDir)
 {
-	half dp = dot(refl, lightDir);
+    half dp = dot(refl, lightDir);
 
-	if (dp > _SkyDirectionality)
-	{
-		dp = (dp - _SkyDirectionality) / (1. - _SkyDirectionality);
-		return lerp(_SkyBase, _SkyTowardsSun, dp);
-	}
+    if (dp > _SkyDirectionality)
+    {
+        dp = (dp - _SkyDirectionality) / (1. - _SkyDirectionality);
+        return lerp(_SkyBase, _SkyTowardsSun, dp);
+    }
 
-	dp = (dp - -1.0) / (_SkyDirectionality - -1.0);
-	return lerp(_SkyAwayFromSun, _SkyBase, dp);
+    dp = (dp - -1.0) / (_SkyDirectionality - -1.0);
+    return lerp(_SkyAwayFromSun, _SkyBase, dp);
 }
 #endif
 
@@ -24,8 +24,8 @@ uniform sampler2D _ReflectionTex;
 
 half3 PlanarReflection(half3 refl, half4 i_screenPos, half3 n_pixel)
 {
-	i_screenPos.xy += n_pixel.xz;
-	return tex2Dproj(_ReflectionTex, UNITY_PROJ_COORD(i_screenPos)).xyz;
+    i_screenPos.xy += n_pixel.xz;
+    return tex2Dproj(_ReflectionTex, UNITY_PROJ_COORD(i_screenPos)).xyz;
 }
 #endif // _PLANARREFLECTIONS_ON
 
@@ -43,29 +43,29 @@ uniform samplerCUBE _Skybox;
 
 void ApplyReflection(half3 view, half3 n_pixel, half3 lightDir, half shadow, half4 i_screenPos, inout half3 col)
 {
-	// Reflection
-	half3 refl = reflect(-view, n_pixel);
-	half3 skyColour;
+    // Reflection
+    half3 refl = reflect(-view, n_pixel);
+    half3 skyColour;
 
 #if _PLANARREFLECTIONS_ON
-	skyColour = PlanarReflection(refl, i_screenPos, n_pixel);
+    skyColour = PlanarReflection(refl, i_screenPos, n_pixel);
 #elif _PROCEDURALSKY_ON
-	skyColour = SkyProceduralDP(refl, lightDir);
+    skyColour = SkyProceduralDP(refl, lightDir);
 #else
-	skyColour = texCUBE(_Skybox, refl).rgb;
+    skyColour = texCUBE(_Skybox, refl).rgb;
 #endif
 
-	// Add primary light to boost it
+    // Add primary light to boost it
 #if _COMPUTEDIRECTIONALLIGHT_ON
-	skyColour += pow(max(0., dot(refl, lightDir)), _DirectionalLightFallOff) * _DirectionalLightBoost * _LightColor0 * shadow;
+    skyColour += pow(max(0., dot(refl, lightDir)), _DirectionalLightFallOff) * _DirectionalLightBoost * _LightColor0 * shadow;
 #endif
 
-	// Fresnel
-	const float IOR_AIR = 1.0;
-	const float IOR_WATER = 1.33;
-	// reflectance at facing angle
-	float R_0 = (IOR_AIR - IOR_WATER) / (IOR_AIR + IOR_WATER); R_0 *= R_0;
-	// schlick's approximation
-	float R_theta = R_0 + (1.0 - R_0) * pow(1.0 - max(dot(n_pixel, view), 0.), _FresnelPower);
-	col = lerp(col, skyColour, R_theta);
+    // Fresnel
+    const float IOR_AIR = 1.0;
+    const float IOR_WATER = 1.33;
+    // reflectance at facing angle
+    float R_0 = (IOR_AIR - IOR_WATER) / (IOR_AIR + IOR_WATER); R_0 *= R_0;
+    // schlick's approximation
+    float R_theta = R_0 + (1.0 - R_0) * pow(1.0 - max(dot(n_pixel, view), 0.), _FresnelPower);
+    col = lerp(col, skyColour, R_theta);
 }

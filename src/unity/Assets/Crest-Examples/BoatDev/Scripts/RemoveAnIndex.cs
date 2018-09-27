@@ -2,7 +2,7 @@
 
 public class RemoveAnIndex : MonoBehaviour {
 
-	void Start () {
+    void Start () {
         var mf = GetComponent<MeshFilter>();
         var indices = mf.mesh.GetIndices(0);
         var indices2 = new int[indices.Length - 3];
@@ -11,9 +11,9 @@ public class RemoveAnIndex : MonoBehaviour {
             indices2[i] = indices[i];
 
         mf.mesh.SetIndices(indices2, mf.mesh.GetTopology(0), 0);
-	}
-	
-	void Update () {
-		
-	}
+    }
+    
+    void Update () {
+        
+    }
 }
