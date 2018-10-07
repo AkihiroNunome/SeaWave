@@ -86,7 +86,7 @@ Material:
     - _CausticsStrength: 3.2
     - _CausticsTextureAverage: 0.07
     - _CausticsTextureScale: 5
-    - _CompileShaderWithDebugInfo: 1
+    - _CompileShaderWithDebugInfo: 0
     - _ComputeDirectionalLight: 1
     - _CullMode: 2
     - _DebugDisableMultiplyByLight0Color: 0
@@ -117,11 +117,11 @@ Material:
     - _StartLevel: 0.157
     - _SubSurfaceBase: 0.24
     - _SubSurfaceCrestColour: 1
-    - _SubSurfaceDepthMax: 9.4
-    - _SubSurfaceDepthPower: 2.57
+    - _SubSurfaceDepthMax: 9.5
+    - _SubSurfaceDepthPower: 2.6
     - _SubSurfaceHeightLerp: 1
-    - _SubSurfaceHeightMax: 24.9
-    - _SubSurfaceHeightPower: 1.68
+    - _SubSurfaceHeightMax: 25
+    - _SubSurfaceHeightPower: 1.7
     - _SubSurfaceScattering: 1
     - _SubSurfaceShallowColour: 1
     - _SubSurfaceSun: 4.85
@@ -136,7 +136,7 @@ Material:
     - _WaveFoamBubblesStrength: 0.637
     - _WaveFoamCoverage: 0.38
     - _WaveFoamFeather: 0.4
-    - _WaveFoamLightScale: 1.353
+    - _WaveFoamLightScale: 1.35
     - _WaveFoamNormalStrength: 3.5
     - _WaveFoamNormalsY: 0.253
     - _WaveFoamSpecularBoost: 0.15
@@ -144,12 +144,24 @@ Material:
     - _WaveFoamStart: 0
     - _WaveFoamStrength: 1
     m_Colors:
+    - _CausticsParams1: {r: 5, g: 3.2, b: 10, a: 0.075}
+    - _CausticsParams11: {r: 0.27, g: 0.4, b: 1.68, a: 1.35}
+    - _CausticsParams2: {r: 0.07, g: 2, b: 0.33, a: 0}
+    - _CausticsParams21: {r: 0.27, g: 0.4, b: 1.68, a: 1.35}
     - _DepthFogDensity: {r: 0.5568628, g: 0.4352941, b: 0.52156866, a: 1}
+    - _DepthFogDensity2: {r: 0.28, g: 0.16, b: 0.24, a: 1}
     - _Diffuse: {r: 0, g: 0.0067332755, b: 0.35686275, a: 1}
     - _DiffuseShadow: {r: 0.21067381, g: 0.26255617, b: 0.294, a: 1}
     - _DirectionalScatteringParams: {r: 0.4, g: 4.85, b: 7.11, a: 0}
     - _FoamBubbleColor: {r: 0.6383055, g: 0.8301887, b: 0.8243741, a: 1}
+    - _FoamParams: {r: 0.27, g: 0.4, b: 1.68, a: 1.35}
+    - _FoamParams1: {r: 9.5, g: 2.6, b: 0, a: 0}
+    - _FoamParams3DLight: {r: 3.5, g: 293, b: 0.15, a: 0}
     - _FoamWhiteColor: {r: 1, g: 0.99634784, b: 0.97199994, a: 0.6862745}
+    - _HeightScatteringParams: {r: 25, g: 1.7, b: 0, a: 0}
+    - _ScatterParamsDepth: {r: 9.5, g: 2.6, b: 0, a: 0}
+    - _ScatterParamsDir: {r: 0.4, g: 4.85, b: 7.11, a: 0}
+    - _ScatterParamsHeight: {r: 25, g: 1.7, b: 0, a: 0}
     - _SkyAwayFromSun: {r: 0.15419213, g: 0.22129796, b: 0.5372549, a: 1}
     - _SkyBase: {r: 0.55200005, g: 0.85242355, b: 1, a: 1}
     - _SkyTowardsSun: {r: 2.6390157, g: 1.8217498, b: 0.9236555, a: 1}

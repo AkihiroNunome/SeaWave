@@ -7,14 +7,12 @@ uniform half _FoamScale;
 uniform float4 _FoamTexture_TexelSize;
 uniform half4 _FoamWhiteColor;
 uniform half4 _FoamBubbleColor;
-uniform half _ShorelineFoamMinDepth;
-uniform half _WaveFoamFeather;
-uniform half _WaveFoamBubblesCoverage;
-uniform half _WaveFoamNormalStrength;
-uniform half _WaveFoamSpecularFallOff;
-uniform half _WaveFoamSpecularBoost;
-uniform half _WaveFoamLightScale;
+uniform half4 _FoamParams;
 uniform half2 _WindDirXZ;
+
+#if _FOAM3DLIGHTING_ON
+uniform half4 _FoamParams3DLight;
+#endif
 
 half3 AmbientLight()
 {
@@ -30,7 +28,8 @@ half WhiteFoamTexture(half i_foam, float2 i_worldXZUndisplaced)
 
 	// black point fade
 	i_foam = saturate(1. - i_foam);
-	return smoothstep(i_foam, i_foam + _WaveFoamFeather, ft);
+	const half waveFoamFeather = _FoamParams[1];
+	return smoothstep(i_foam, i_foam + waveFoamFeather, ft);
 }
 
 void ComputeFoam(half i_foam, float2 i_worldXZUndisplaced, float2 i_worldXZ, half3 i_n, float i_pixelZ, float i_sceneZ, half3 i_view, float3 i_lightDir, half i_shadow, out half3 o_bubbleCol, out half4 o_whiteFoamCol)
@@ -38,15 +37,19 @@ void ComputeFoam(half i_foam, float2 i_worldXZUndisplaced, float2 i_worldXZ, hal
 	half foamAmount = i_foam;
 
 	// feather foam very close to shore
-	foamAmount *= saturate((i_sceneZ - i_pixelZ) / _ShorelineFoamMinDepth);
+	const half shorelineFoamMinDepth = _FoamParams[0];
+	foamAmount *= saturate((i_sceneZ - i_pixelZ) / shorelineFoamMinDepth);
 
 	// Additive underwater foam - use same foam texture but add mip bias to blur for free
+	const half waveFoamBubblesCoverage = _FoamParams[2];
 	float2 foamUVBubbles = (lerp(i_worldXZUndisplaced, i_worldXZ, 0.05) + 0.5 * _CrestTime * _WindDirXZ) / _FoamScale + 0.125 * i_n.xz;
 	half bubbleFoamTexValue = tex2Dlod(_FoamTexture, float4(.74 * foamUVBubbles - .05*i_view.xz / i_view.y, 0., 5.)).r;
-	o_bubbleCol = (half3)bubbleFoamTexValue * _FoamBubbleColor.rgb * saturate(i_foam * _WaveFoamBubblesCoverage) * AmbientLight();
+	o_bubbleCol = (half3)bubbleFoamTexValue * _FoamBubbleColor.rgb * saturate(i_foam * waveFoamBubblesCoverage) * AmbientLight();
 
 	// White foam on top, with black-point fading
 	half whiteFoam = WhiteFoamTexture(foamAmount, i_worldXZUndisplaced);
+
+	const half waveFoamLightScale = _FoamParams[3];
 
 #if _FOAM3DLIGHTING_ON
 	// Scale up delta by Z - keeps 3d look better at distance. better way to do this?
@@ -54,16 +57,20 @@ void ComputeFoam(half i_foam, float2 i_worldXZUndisplaced, float2 i_worldXZ, hal
 	half whiteFoam_x = WhiteFoamTexture(foamAmount, i_worldXZUndisplaced + dd.xy);
 	half whiteFoam_z = WhiteFoamTexture(foamAmount, i_worldXZUndisplaced + dd.yx);
 
+	const half waveFoamNormalStrength = _FoamParams3DLight[0];
+	const half waveFoamSpecularFallOff = _FoamParams3DLight[1];
+	const half waveFoamSpecularBoost = _FoamParams3DLight[2];
+
 	// compute a foam normal
 	half dfdx = whiteFoam_x - whiteFoam, dfdz = whiteFoam_z - whiteFoam;
-	half3 fN = normalize(i_n + _WaveFoamNormalStrength * half3(-dfdx, 0., -dfdz));
+	half3 fN = normalize(i_n + waveFoamNormalStrength * half3(-dfdx, 0., -dfdz));
 	// do simple NdL and phong lighting
 	half foamNdL = max(0., dot(fN, i_lightDir));
-	o_whiteFoamCol.rgb = _FoamWhiteColor.rgb * (AmbientLight() + _WaveFoamLightScale * _LightColor0 * foamNdL * i_shadow);
+	o_whiteFoamCol.rgb = _FoamWhiteColor.rgb * (AmbientLight() + waveFoamLightScale * _LightColor0 * foamNdL * i_shadow);
 	half3 refl = reflect(-i_view, fN);
-	o_whiteFoamCol.rgb += pow(max(0., dot(refl, i_lightDir)), _WaveFoamSpecularFallOff) * _WaveFoamSpecularBoost * _LightColor0 * i_shadow;
+	o_whiteFoamCol.rgb += pow(max(0., dot(refl, i_lightDir)), waveFoamSpecularFallOff) * waveFoamSpecularBoost * _LightColor0 * i_shadow;
 #else // _FOAM3DLIGHTING_ON
-	o_whiteFoamCol.rgb = _FoamWhiteColor.rgb * (AmbientLight() + _WaveFoamLightScale * _LightColor0 * i_shadow);
+	o_whiteFoamCol.rgb = _FoamWhiteColor.rgb * (AmbientLight() + waveFoamLightScale * _LightColor0 * i_shadow);
 #endif // _FOAM3DLIGHTING_ON
 
 	o_whiteFoamCol.a = _FoamWhiteColor.a * whiteFoam;

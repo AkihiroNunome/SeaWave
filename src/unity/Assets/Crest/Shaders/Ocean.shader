@@ -23,14 +23,14 @@ Shader "Ocean/Ocean"
 
 		[Header(Height Based Scattering)]
 		[Toggle] _SubSurfaceHeightLerp("Enable", Float) = 1
-		_SubSurfaceHeightMax("Height Max", Range(0.0, 50.0)) = 3.0
-		_SubSurfaceHeightPower("Height Power", Range(0.01, 10.0)) = 1.0
+		[PackedRangedFloats(Height Max, 0, 50, Height Power, 0.01, 10, _, 0, 0, _, 0, 0)]
+		_ScatterParamsHeight("", Vector) = (25, 1.7, 0, 0)
 		_SubSurfaceCrestColour("Crest Colour", Color) = (0.42, 0.69, 0.52)
 
 		[Header(Shallow Scattering)]
 		[Toggle] _SubSurfaceShallowColour("Enable", Float) = 1
-		_SubSurfaceDepthMax("Depth Max", Range(0.01, 50.0)) = 3.0
-		_SubSurfaceDepthPower("Depth Power", Range(0.01, 10.0)) = 1.0
+		[PackedRangedFloats(Depth Max, 0.01, 50, Depth Power, 0.01, 10, _, 0, 0, _, 0, 0)]
+		_ScatterParamsDepth("", Vector) = (9.5, 2.6, 0, 0)
 		_SubSurfaceShallowCol("Shallow Colour", Color) = (0.42, 0.75, 0.69)
 
 		[Header(Reflection Environment)]
@@ -54,31 +54,26 @@ Shader "Ocean/Ocean"
 		_FoamScale("Scale", Range(0.01, 50.0)) = 10.0
 		_FoamWhiteColor("White Foam Color", Color) = (1.0, 1.0, 1.0, 1.0)
 		_FoamBubbleColor("Bubble Foam Color", Color) = (0.64, 0.83, 0.82, 1.0)
-		_ShorelineFoamMinDepth("Shoreline Foam Min Depth", Range(0.01, 5.0)) = 0.27
-		_WaveFoamFeather("Wave Foam Feather", Range(0.001,1.0)) = 0.32
-		_WaveFoamBubblesCoverage("Wave Foam Bubbles Coverage", Range(0.0,5.0)) = 0.95
+		[PackedRangedFloats(Shoreline Foam Min Depth, 0.01, 5, Wave Foam Feather, 0.001, 1, Wave Foam Bubbles Coverage, 0, 5, Light Scale, 0, 2)]
+		_FoamParams("", Vector) = (0.27, 0.4, 1.68, 1.35)
 
 		[Header(Foam 3D Lighting)]
 		[Toggle] _Foam3DLighting("Enable", Float) = 1
-		_WaveFoamLightScale("Light Scale", Range(0.0, 2.0)) = 0.7
-		_WaveFoamNormalStrength("Normals Strength", Range(0.0, 30.0)) = 3.5
-		_WaveFoamSpecularFallOff("Specular Fall-Off", Range(1.0, 512.0)) = 275.0
-		_WaveFoamSpecularBoost("Specular Boost", Range(0.0, 16.0)) = 4.0
+		[PackedRangedFloats(Normals Strength, 0, 30, Specular Fall Off, 1, 512, Specular Boost, 0, 16, _, 0, 0)]
+		_FoamParams3DLight("", Vector) = (3.5, 293, 0.15, 0)
 
 		[Header(Transparency)]
 		[Toggle] _Transparency("Enable", Float) = 1
-		_DepthFogDensity("Density", Vector) = (0.28, 0.16, 0.24, 1.0)
+		[PackedRangedFloats(Absorb Red, 0, 1, Absorb Green, 0, 1, Absorb Blue, 0, 1, _, 0, 0)]
+		_DepthFogDensity("", Vector) = (0.28, 0.16, 0.24, 1.0)
 
 		[Header(Caustics)]
 		[Toggle] _Caustics("Enable", Float) = 1
 		[NoScaleOffset] _CausticsTexture ("Caustics", 2D ) = "black" {}
-		_CausticsTextureScale("Scale", Range(0.0, 25.0)) = 5.0
-		_CausticsTextureAverage("Texture Average Value", Range(0.0, 1.0)) = 0.07
-		_CausticsStrength("Strength", Range(0.0, 10.0)) = 3.2
-		_CausticsFocalDepth("Focal Depth", Range(0.0, 25.0)) = 2.0
-		_CausticsDepthOfField("Depth Of Field", Range(0.01, 10.0)) = 0.33
-		_CausticsDistortionScale("Distortion Scale", Range(0.01, 50.0)) = 10.0
-		_CausticsDistortionStrength("Distortion Strength", Range(0.0, 0.25)) = 0.075
+		[PackedRangedFloats(Scale, 0, 25, Strength, 0, 10, Distortion Scale, 0.01, 50, Distortion Strength, 0.0, 0.25)]
+		_CausticsParams1("", Vector) = (5, 3.2, 10, 0.075)
+		[PackedRangedFloats(Texture Average Value, 0, 1, Focal Depth, 0, 25, Depth Of Field, 0.01, 10, _, 0, 0)]
+		_CausticsParams2("", Vector) = (0.07, 2, 0.33, 0)
 
 		[Header(Flow)]
 		[Toggle] _Flow("Enable", Float) = 0
