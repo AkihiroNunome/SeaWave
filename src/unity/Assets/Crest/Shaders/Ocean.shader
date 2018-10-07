@@ -18,9 +18,8 @@ Shader "Ocean/Ocean"
 		[Header(Directional Scattering)]
 		[Toggle] _SubSurfaceScattering("Enable", Float) = 1
 		_SubSurfaceColour("Colour", Color) = (0.0, 0.48, 0.36)
-		_SubSurfaceBase("Base Mul", Range(0.0, 2.0)) = 0.6
-		_SubSurfaceSun("Sun Mul", Range(0.0, 10.0)) = 0.8
-		_SubSurfaceSunFallOff("Sun Fall-Off", Range(1.0, 16.0)) = 4.0
+		[PackedRangedFloats(Base Mul, 0, 2, Sun Mul, 0, 10, Sun Fall Off, 1, 15, _, 0, 0)]
+		_ScatterParamsDir("", Vector) = (0.4, 4.85, 7.11, 0.0)
 
 		[Header(Height Based Scattering)]
 		[Toggle] _SubSurfaceHeightLerp("Enable", Float) = 1

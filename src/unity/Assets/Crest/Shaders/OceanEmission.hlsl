@@ -11,12 +11,10 @@ uniform half4 _DepthFogDensity;
 
 #if _SUBSURFACESCATTERING_ON
 uniform half3 _SubSurfaceColour;
-uniform half _SubSurfaceBase;
-uniform half _SubSurfaceSun;
-uniform half _SubSurfaceSunFallOff;
 uniform half _SubSurfaceHeightMax;
 uniform half _SubSurfaceHeightPower;
 uniform half3 _SubSurfaceCrestColour;
+uniform half3 _ScatterParamsDir;
 #endif // _SUBSURFACESCATTERING_ON
 
 #if _SUBSURFACESHALLOWCOLOUR_ON
@@ -73,8 +71,9 @@ half3 OceanEmission(float3 worldPos, half oceanDepth, half3 view, half3 n, half3
 		col *= half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w);
 
 		// Approximate subsurface scattering - add light when surface faces viewer. Use geometry normal - don't need high freqs.
-		half towardsSun = pow(max(0., dot(lightDir, -view)), _SubSurfaceSunFallOff);
-		col += (_SubSurfaceBase + _SubSurfaceSun * towardsSun) * max(dot(n_geom, view), 0.) * _SubSurfaceColour.rgb * _LightColor0 * i_shadow;
+		half towardsSun = pow(max(0., dot(lightDir, -view)), _ScatterParamsDir[2]);
+		col += (_ScatterParamsDir[0] + 
+			_ScatterParamsDir[1] * towardsSun) * max(dot(n_geom, view), 0.) * _SubSurfaceColour.rgb * _LightColor0 * i_shadow;
 	}
 #endif // _SUBSURFACESCATTERING_ON
 
