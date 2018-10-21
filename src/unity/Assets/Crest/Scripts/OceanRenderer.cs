@@ -177,6 +177,8 @@ namespace Crest
 
             float maxWavelength = _lodDataAnimWaves[_lodDataAnimWaves.Length - 1].MaxWavelength();
             Shader.SetGlobalFloat("_MaxWavelength", maxWavelength);
+            float minWavelength = _lodDataAnimWaves[0].MaxWavelength() / 2f;
+            Shader.SetGlobalFloat("_MinWavelength", minWavelength);
         }
 
         void LateUpdatePosition()

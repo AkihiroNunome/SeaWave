@@ -2,7 +2,7 @@
 
 // how many samples we want in one wave. trade quality for perf.
 uniform float _TexelsPerWave;
-uniform float _MaxWavelength;
+uniform float _MinWavelength, _MaxWavelength;
 uniform float _ViewerAltitudeLevelAlpha;
 
 // assumes orthographic camera. uses camera dimensions, target resolution, and texels-per-wave quality setting
@@ -32,6 +32,14 @@ bool SamplingIsAppropriate(float wavelengthInShape, out float wt)
 	const bool shapeTooBigForAllLods = wavelengthInShape > _MaxWavelength;
 	if (!shapeTooBigForAllLods) return false;
 
+	// if rendering into first lod, fade out shape as camera gains altitude
+	const bool renderingIntoFirstLod = minWavelength < 2.0 * _MinWavelength;
+	if (renderingIntoFirstLod)
+	{
+		wt = 1. - _ViewerAltitudeLevelAlpha;
+		return true;
+	}
+
 	// wavelengths that are too big for the LOD hierarchy we still accumulated into the last LODs, because losing them
 	// changes the shape dramatically (unlike wavelengths that are too small for LOD0, as these do not make a big difference to overall shape).
 
@@ -56,6 +64,13 @@ bool SamplingIsAppropriate(float wavelengthInShape, out float wt)
 // is not pop when the lod chain scale changes due to sampling changes when a set of waves suddenly moves from one sampling resolution to another.
 float ComputeSortedShapeWeight(float wavelengthInShape, float minWavelength)
 {
+	const bool renderingIntoFirstLod = minWavelength < 2.0 * _MinWavelength;
+	if (renderingIntoFirstLod)
+	{
+		// example: fade out the first lod as viewer gains altitude, so there is no pop when the lod chain shifts up in scale
+		return 1.0 - _ViewerAltitudeLevelAlpha;
+	}
+
 	const bool renderingIntoLastTwoLods = minWavelength * 4.01 > _MaxWavelength;
 	if (!renderingIntoLastTwoLods)
 	{
@@ -66,7 +81,7 @@ float ComputeSortedShapeWeight(float wavelengthInShape, float minWavelength)
 	const bool renderingIntoLastLod = minWavelength * 2.01 > _MaxWavelength;
 	if (renderingIntoLastLod)
 	{
-		// example: fade out the last lod as viewer drops in altitude, so there is no pop when the lod chain shifts in scale
+		// example: fade out the last lod as viewer drops in altitude, so there is no pop when the lod chain shifts down in scale
 		return _ViewerAltitudeLevelAlpha;
 	}
 
