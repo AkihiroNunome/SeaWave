@@ -189,8 +189,8 @@ Shader "Ocean/Ocean"
 
 					// vertex snapping and lod transition
 					float lodAlpha;
-					SnapAndTransitionVertLayout(_InstanceData.x, o.worldPos, lodAlpha);
-					o.lodAlpha_worldXZUndisplaced_oceanDepth.x = lodAlpha;
+					SnapAndTransitionVertLayout(_InstanceData.x, o.worldPos, lodAlpha, o.lodAlpha_worldXZUndisplaced_oceanDepth.x);
+
 					o.lodAlpha_worldXZUndisplaced_oceanDepth.yz = o.worldPos.xz;
 
 					// sample shape textures - always lerp between 2 LOD scales, so sample two textures

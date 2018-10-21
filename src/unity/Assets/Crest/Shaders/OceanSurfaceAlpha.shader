@@ -61,7 +61,8 @@ Shader "Ocean/Ocean Surface Alpha"
 				worldPos.y = 0.;
 
 				// vertex snapping and lod transition
-				float lodAlpha = ComputeLodAlpha(worldPos, _InstanceData.x);
+				float lodAlpha = ComputeLodAlpha(worldPos);
+				lodAlpha = min(lodAlpha + _InstanceData.x, 1.);
 
 				// sample shape textures - always lerp between 2 scales, so sample two textures
 				half2 nxz = (half2)0.;
