@@ -122,6 +122,7 @@ Material:
     - _Shadows: 0
     - _ShorelineFoamMinDepth: 0.27
     - _SkyDirectionality: 0.875
+    - _SphericalOceanRadius: 4000
     - _StartLevel: 0.157
     - _StencilFunction: 0
     - _SubSurfaceBase: 0.24

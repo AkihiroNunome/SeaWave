@@ -152,6 +152,9 @@ Shader "Crest/Ocean"
 		[Header(Flow)]
 		[Toggle] _Flow("Enable", Float) = 0
 
+		[Header(Spherical Ocean Hack)]
+		_SphericalOceanRadius("Radius", Range(0.0, 10000.0)) = 4000.0
+
 		[Header(Debug Options)]
 		// Build shader with debug info which allows stepping through the code in a GPU debugger. I typically use RenderDoc or
 		// PIX for Windows (requires DX12 API to be selected).
@@ -241,6 +244,7 @@ Shader "Crest/Ocean"
 
 			// MeshScaleLerp, FarNormalsWeight, LODIndex (debug), unused
 			uniform float4 _InstanceData;
+			float _SphericalOceanRadius;
 
 			// Argument name is v because some macros like COMPUTE_EYEDEPTH require it.
 			Varyings Vert(Attributes v)
@@ -268,6 +272,11 @@ Shader "Crest/Ocean"
 				float wt_0 = (1. - lodAlpha) * _LD_Params_0.z;
 				float wt_1 = (1. - wt_0) * _LD_Params_1.z;
 				const float2 positionWS_XZ_before = o.worldPos.xz;
+
+				// Sphere hack
+				float3 sphereCenter = _OceanCenterPosWorld - float3(0., _SphericalOceanRadius, 0.);
+				o.worldPos = sphereCenter + normalize(o.worldPos - sphereCenter) * _SphericalOceanRadius;
+
 				// Sample displacement textures, add results to current world pos / normal / foam
 				if (wt_0 > 0.001)
 				{
